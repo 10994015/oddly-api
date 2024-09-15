@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: laravel_app
     volumes:
-      - .:/var/www/html
+      - ./:/var/www/html
     networks:
       - laravel
     user: www-data
@@ -22,7 +22,7 @@ services:
     depends_on:
       - app
     volumes:
-      - .:/var/www/html
+      - ./:/var/www/html
     networks:
       - laravel
 
