@@ -25,7 +25,7 @@ COPY . .
 
 # 設置文件權限
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
+    && chmod -R 777 /var/www/html
 
 # 安裝 PHP 依賴
 RUN composer install --no-dev --optimize-autoloader
