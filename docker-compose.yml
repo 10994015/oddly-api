@@ -10,6 +10,7 @@ services:
       - .:/var/www/html
     networks:
       - laravel
+    user: www-data
 
   web:
     build:
