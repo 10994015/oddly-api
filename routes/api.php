@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Middleware\ApiAuthenticate;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -23,13 +26,14 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/login', function (Request $request) {
     $credentials = $request->only('username', 'password');
     $deviceToken = $request->input('device_token');
-
-    if (Auth::attempt(credentials: $credentials)) {
-        $user = Auth::user();
-        if(is_null($user->device_token)) {
+    $user = User::where('username', $credentials['username'])->first();
+    if ($user && $user->password === $credentials['password']) {
+        if(!$user->status){
+            return response()->json(['message' => 'User not activated'], 403);
+        }
+        if(is_null(value: $user->device_token)) {
             $user->device_token = $deviceToken;
             $user->save();
-
         }else {
             if ($user->device_token !== $deviceToken) {
                 return response()->json(['message' => 'Device token mismatch'], 401);
@@ -56,9 +60,16 @@ Route::post('/logout', function (Request $request) {
         // 撤銷當前用戶的所有 token
         $user->tokens()->delete();
 
-        return response()->json(['message' => 'Logged out successfully'], 200);
+        return response()->json(['message' => 'Logged out successfully'], 201);
     }
-
     // 如果用戶沒有登入，返回錯誤信息
     return response()->json(['message' => 'User not logged in'], 401);
-})->middleware('auth:sanctum');
+})->middleware('auth:sanctum')->withoutMiddleware(ApiAuthenticate::class);
+
+Route::get('/get-user', function (Request $request) {
+    if (Auth::check()) {
+        $user = Auth::user();
+        return response()->json((new UserResource($user)), 200);
+    }
+    return response()->json(['message' => 'User not logged in'], 401);
+})->middleware('auth:sanctum')->withoutMiddleware(ApiAuthenticate::class);
