@@ -24,6 +24,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::post('/login', function (Request $request) {
+
+    if($request->username=='' || $request->password=='' || $request->device_token==''){
+        return response()->json(['message' => 'Username or password is required'], 422);
+    }
     $credentials = $request->only('username', 'password');
     $deviceToken = $request->input('device_token');
     $user = User::where('username', $credentials['username'])->first();
@@ -36,7 +40,7 @@ Route::post('/login', function (Request $request) {
             $user->save();
         }else {
             if ($user->device_token !== $deviceToken) {
-                return response()->json(['message' => 'Device token mismatch'], 401);
+                return response()->json(['message' => 'Device token mismatch'], 422);
             }
         }
 
@@ -48,7 +52,7 @@ Route::post('/login', function (Request $request) {
         ]);
     }
 
-    return response()->json(['message' => 'Username or password is incorrect'], 401);
+    return response()->json(['message' => 'Username or password is incorrect'], 422);
 });
 
 Route::post('/logout', function (Request $request) {
