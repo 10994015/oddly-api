@@ -19,6 +19,11 @@ return new class extends Migration
             $table->string('device_token')->nullable();
             $table->boolean('is_admin')->default(false);
             $table->boolean('status')->default(true);
+            $table->string('customer')->nullable();
+            $table->string('customer_phone')->nullable();
+            $table->boolean('sold')->default(false)->comment('售出狀態');
+            $table->integer('sold_price')->nullable()->comment('售出金額');
+            $table->timestamp('expiration')->nullable()->comment('到期日');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();

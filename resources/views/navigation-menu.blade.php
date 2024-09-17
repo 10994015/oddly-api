@@ -47,7 +47,7 @@
 
 
                                     <!-- Team Switcher -->
-                                  
+
                                 </div>
                             </x-slot>
                         </x-dropdown>
@@ -161,7 +161,7 @@
                     </x-responsive-nav-link>
                 </form>
 
-              
+
             </div>
         </div>
     </div>

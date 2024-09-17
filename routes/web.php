@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', UserComponent::class);
+Route::get('/', UserComponent::class)->name('home');
 Route::get('/web', UserComponent::class)->middleware('auth');
 
 Route::middleware([
