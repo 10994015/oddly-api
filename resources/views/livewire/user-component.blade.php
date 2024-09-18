@@ -14,18 +14,21 @@ x-on:open-password-model.window="openPasswordModel()"
 >
     @include('livewire.components.device-token')
     @include('livewire.components.show-password')
-    <h2 class="text-2xl font-semibold mb-4">用戶資料</h2>
+    <h2 class="text-lg mb-4">帳號列表</h2>
     <div class="max-w-4xl mx-auto">
         <div class="flex flex-col justify-center space-y-4 md:flex-row md:space-y-0 md:space-x-4 p-4 bg-white rounded-lg shadow">
-            <select class="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-[100px]">
-                <option>10 筆</option>
-                <option>20 筆</option>
-                <option>50 筆</option>
-                <option>100 筆</option>
+            <select wire:model.live="perPage" class="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-[100px]">
+                <option value="10">10 筆</option>
+                <option value="20">20 筆</option>
+                <option value="50">50 筆</option>
+                <option value="100">100 筆</option>
+                <option value="200">200 筆</option>
+                <option value="500">500 筆</option>
             </select>
 
             <!-- 搜尋輸入框 -->
             <input
+                wire:model.live.debounce.250ms="search"
                 type="text"
                 placeholder="搜尋..."
                 class="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 flex-grow"
@@ -35,19 +38,16 @@ x-on:open-password-model.window="openPasswordModel()"
 
             <!-- 分類按鈕 -->
             <div class="flex space-x-2">
-                <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                <button wire:click="resetFilter(1)" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                     全部顯示
                 </button>
-                <button class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+                <button wire:click="resetFilter(2)" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
                     已售出
                 </button>
-                <button class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+                <button wire:click="resetFilter(3)" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
                     未售出
                 </button>
-                <button class="px-4 py-2 bg-yellow-500 text-white rounded-md hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-opacity-50">
-                    已過期
-                </button>
-                <button class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
+                <button wire:click="resetFilter(4)" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
                     已停用
                 </button>
             </div>
@@ -76,7 +76,7 @@ x-on:open-password-model.window="openPasswordModel()"
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-            @foreach($users as $user)
+            @forelse($users as $user)
             <tr wire:key="{{$user->id}}">
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$user->id}}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{$user->name}}</td>
@@ -111,11 +111,13 @@ x-on:open-password-model.window="openPasswordModel()"
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$user->created_at}}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$user->updated_at}}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">編輯</button>
-                <button class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">更改密碼</button>
+                <a href="{{route('user.edit', $user->id)}}" class=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-center">編輯</a>
+                <a href="{{route('user.update-password', $user->id)}}" class=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-center">更改密碼</a>
             </td>
             </tr>
-            @endforeach
+            @empty
+                <td class="px-6 py-12 whitespace-nowrap text-sm text-gray-500 text-center" colspan="12">查無資料。</td>
+            @endforelse
         </tbody>
       </table>
     </div>

@@ -3,6 +3,8 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use Carbon\Carbon;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithoutUrlPagination;
 
@@ -14,6 +16,13 @@ class UserComponent extends Component
     public $deviceToken;
     public $pwdModalUsername;
     public $pwdModalPassword;
+
+    public $perPage;
+    public $search;
+    public $category = 1;
+    public function resetFilter($catgory){
+        $this->category = $catgory;
+    }
     public function openDeviceModal($id){
         $user = User::find($id);
         $this->deviceUsername = $user->username;
@@ -27,9 +36,31 @@ class UserComponent extends Component
         $this->pwdModalPassword = $user->password;
         $this->dispatch('open-password-model');
     }
+    #[Layout('livewire.layouts.app')]
     public function render()
     {
-        $users = User::where('is_admin', false)->paginate(5);
-        return view('livewire.user-component', compact('users'))->layout('livewire.layouts.app');
+        $now = Carbon::now();
+        $users = User::where('is_admin', false)
+            ->where(function($query) {
+                $query->where('username', 'like', '%' . $this->search . '%')
+                    ->orWhere('name', 'like', '%' . $this->search . '%')
+                    ->orWhere('customer', 'like', '%' . $this->search . '%')
+                    ->orWhere('device_token', 'like', '%' . $this->search . '%')
+                    ->orWhere('expiration', 'like', '%' . $this->search . '%')
+                    ->orWhere('created_at', 'like', '%' . $this->search . '%')
+                    ->orWhere('updated_at', 'like', '%' . $this->search . '%');
+            });
+
+        // 其餘代碼保持不變
+        if ($this->category == 1) {
+            $users = $users->paginate($this->perPage);
+        } elseif ($this->category == 2) {
+            $users = $users->where('sold', 1)->paginate($this->perPage);
+        } elseif ($this->category == 3) {
+            $users = $users->where('sold', 0)->paginate($this->perPage);
+        } elseif ($this->category == 4) {
+            $users = $users->where('status', 0)->paginate($this->perPage);
+        } 
+        return view('livewire.user-component', compact('users'));
     }
 }

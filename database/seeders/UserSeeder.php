@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             'email' => 'admin@boying.com.tw',
             'username'=> 'admin',
             'email_verified_at' => now(),
-            'password' => 'admin',
+            'password' => Hash::make('admin'),
             'is_admin'=> true,
             'created_at' => now(),
             'updated_at' => now(),

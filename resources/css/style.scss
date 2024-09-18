@@ -7,6 +7,15 @@ $timing: 250ms;
 $transition: $timing ease all;
 $linkWidth: 10rem;
 
+[x-cloak]{
+  display: none;
+}
+input:checked ~ .dot {
+  transform: translateX(100%);
+}
+input:checked ~ .block {
+  background-color: #4F46E5;
+}
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@600&display=swap');
 body{
   background-size:cover;

@@ -1,6 +1,8 @@
 <?php
 
+use App\Livewire\UpdateUserPasswordComponent;
 use App\Livewire\UserComponent;
+use App\Livewire\UserDetailComponent;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,9 +15,11 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
-
-Route::get('/', UserComponent::class)->name('home');
-Route::get('/web', UserComponent::class)->middleware('auth');
+Route::middleware('admin')->group(function () {
+    Route::get('/', UserComponent::class)->name('users');
+    Route::get('/user-details/{id}', UserDetailComponent::class)->name('user.edit');
+    Route::get('/user-update-password/{id}', UpdateUserPasswordComponent::class)->name('user.update-password');
+});
 
 Route::middleware([
     'auth:sanctum',
