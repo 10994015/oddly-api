@@ -107,14 +107,14 @@ body{
       &:first-child:nth-last-child(#{$i}),
       &:first-child:nth-last-child(#{$i}) ~ li {
         @for $j from 1 to $i {
-          &:nth-child(#{$j}):hover, {
+          &:nth-child(#{$j}):hover{
             ~ li:last-child:before {
-              left: (100% / $i) * ($j - 1);
+              left: calc(100% / #{$i}) * ($i - 1);
             }
           }
         }
-        &:last-child:hover:before, {
-          left: (100% / $i) * ($i - 1);
+        &:last-child:hover:before {
+          left: calc(100% / #{$i}) * ($i - 1);
         }
       }
     }
