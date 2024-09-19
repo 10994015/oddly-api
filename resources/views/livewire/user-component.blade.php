@@ -40,11 +40,6 @@ x-on:success-create-users.window="successCreateUsers()"
                     <option value="{{$year}}">{{$year}}</option>
                 @endfor
             </select>
-            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
-                </svg>
-            </div>
         </div>
     </div>
     <div class="flex justify-center items-center p-4 bg-gray-100">
@@ -56,7 +51,7 @@ x-on:success-create-users.window="successCreateUsers()"
           <span class="text-gray-600 text-sm font-medium">總售出額</span>
           <p class="text-3xl font-bold text-indigo-600 mt-2">$ {{ $totalSoldPrice }}</p>
         </div>
-       
+
     </div>
     <div class="max-w-4xl mx-auto">
         <div class="flex flex-col justify-center space-y-4 md:flex-row md:space-y-0 md:space-x-4 p-4 bg-white rounded-lg shadow">
@@ -94,14 +89,23 @@ x-on:success-create-users.window="successCreateUsers()"
                     </button>
                 </div>
                 <div>
-                    分類:全部顯示
+                    分類:
+                    @if($category==1)
+                        全部顯示
+                    @elseif($category==2)
+                        已售出
+                    @elseif($category==3)
+                        未售出
+                    @elseif($category==4)
+                        已停用
+                    @endif
                 </div>
             </div>
             <div>
                 <button @click="openCreateUserModel()" class="px-4 py-2 bg-green-800 text-white rounded-md hover:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-800 focus:ring-opacity-50">新增帳號</button>
             </div>
         </div>
-        
+
     </div>
 
     <div class="bg-white shadow-md rounded-lg w-full">

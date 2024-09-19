@@ -6,12 +6,12 @@
             <div class="mt-2 px-7 py-3">
                 <table class="min-w-full divide-y divide-gray-200 w-full">
                     <tr>
-                        <td class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border border-gray-300 w-[100px]">帳號</td>
-                        <td class=" px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border border-gray-300 ">{{$pwdModalUsername}}</td>
+                        <td class="px-6 py-3 text-left text-xs font-medium text-gray-500  tracking-wider border border-gray-300 w-[100px]">帳號</td>
+                        <td class=" px-6 py-3 text-left text-xs font-medium text-gray-500  tracking-wider border border-gray-300 ">{{$pwdModalUsername}}</td>
                     </tr>
                     <tr>
-                        <td class=" px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border border-gray-300 ">密碼</td>
-                        <td class=" px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border border-gray-300 ">{{$pwdModalPassword}}</td>
+                        <td class=" px-6 py-3 text-left text-xs font-medium text-gray-500  tracking-wider border border-gray-300 ">密碼</td>
+                        <td class=" px-6 py-3 text-left text-xs font-medium text-gray-500  tracking-wider border border-gray-300 ">{{$pwdModalPassword}}</td>
                     </tr>
                 </table>
             </div>
