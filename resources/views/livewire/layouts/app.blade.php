@@ -16,7 +16,6 @@
             {{$slot}}
         </main>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     @vite(['resources/js/app.js', 'resources/js/script.js'])
 </body>
 </html>

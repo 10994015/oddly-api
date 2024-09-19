@@ -1,7 +1,6 @@
 <div class=" mx-auto mt-8 px-4 w-full"
 x-data="{
     init() {
-        this.initChart();
         console.log(this.chartData)
     },
     chartData: {{json_encode($salesChart)}},
@@ -24,44 +23,11 @@ x-data="{
         alert('新增成功！');
         this.createUserModalShow = false;
     },
-    chart: null,
-    initChart(){
-        if (this.chart) {
-            this.chart.destroy();
-        }
-        const chartData = this.chartData;
-        this.$nextTick(() => {
-            if (this.$refs.canvas) {
-                this.chart = new Chart(this.$refs.canvas, {
-                    type: 'bar',
-                    data: chartData,
-                    options: {
-                        responsive: true,
-                        scales: {
-                            y: {
-                                beginAtZero: true
-                            },
-                        }
-                    }
-                });
-            } else {
-                console.error('Canvas element not found');
-            }
-        });
-    },
-    updateChart(newData) {
-        this.chartData = newData[0];
-        this.$nextTick(() => {
-            this.initChart();
-        });
-    }
-
 }"
 x-on:open-device-model.window="openDeviceModel()"
 x-on:open-password-model.window="openPasswordModel()"
 x-on:error-create-useres.window="errorCreateUsers()"
 x-on:success-create-users.window="successCreateUsers()"
-x-on:update-chart.window="updateChart($event.detail)"
 >
     @include('livewire.components.device-token')
     @include('livewire.components.show-password')
@@ -69,7 +35,7 @@ x-on:update-chart.window="updateChart($event.detail)"
     <h2 class="text-lg mb-4">帳號列表</h2>
     <div>
         <div class="relative inline-block w-48">
-            <select wire:model="currentYear"  class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700 transition-colors duration-200">
+            <select wire:model.live="currentYear" wire:change="reloadChart()" class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700 transition-colors duration-200">
                 @for($year=$initYear;$year>=2022;$year--)
                     <option value="{{$year}}">{{$year}}</option>
                 @endfor
@@ -90,9 +56,7 @@ x-on:update-chart.window="updateChart($event.detail)"
           <span class="text-gray-600 text-sm font-medium">總售出額</span>
           <p class="text-3xl font-bold text-indigo-600 mt-2">$ {{ $totalSoldPrice }}</p>
         </div>
-        <div class="statistics">
-            <canvas  x-ref="canvas" ></canvas>
-        </div>
+       
     </div>
     <div class="max-w-4xl mx-auto">
         <div class="flex flex-col justify-center space-y-4 md:flex-row md:space-y-0 md:space-x-4 p-4 bg-white rounded-lg shadow">

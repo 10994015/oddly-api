@@ -34,41 +34,12 @@ class UserComponent extends Component
     {
         $this->currentYear = (int)now()->format('Y');
         $this->initYear = $this->currentYear;
-        $this->getSold();
-        
+        $this->reloadChart();
     }
-    public function reloadChart($isUpdate=null){
-        $this->getSold();
-        $this->dispatch('update-chart', $this->salesChart);
-    }
-    public function getSold(){
+    public function reloadChart(){
         $solds = User::whereYear('sold_date', (int)$this->currentYear)->get();
         $this->totalSoldPrice = $solds->sum('sold_price');
         $this->totalSoldNumber = $solds->count();
-        // 按月份分組並計算每月銷售額
-        $monthlySales = $solds->groupBy(function($sale) {
-            return Carbon::parse($sale->sold_date)->format('n'); // 'n' 返回不帶前導零的月份數字
-        })->map(function($group) {
-            return $group->sum('sold_price');
-        });
-
-        // 準備12個月的銷售額數據
-        $monthlyData = collect(range(1, 12))->map(function($month) use ($monthlySales) {
-            return $monthlySales->get($month, 0); // 如果沒有數據，返回 0
-        })->values()->all();
-        log::info($monthlyData);
-        $this->salesChart = [
-            'labels' => ['一月', '二月', '三月', '四月', '五月','六月','七月','八月','九月','十月','十一月','十二月'],
-            'datasets' => [
-                [
-                    'label' => '年度銷售額',
-                    'data' => $monthlyData,
-                    'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
-                    'borderColor' => 'rgba(75, 192, 192, 1)',
-                    'borderWidth' => 1
-                ]
-            ]
-        ];
     }
     /**
      * Reset the filter value to $category.
