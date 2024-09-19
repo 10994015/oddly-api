@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('username')->unique();
+            $table->string('username')->unique()->nullable();
             $table->string('password');
             $table->string('device_token')->nullable();
             $table->boolean('is_admin')->default(false);
@@ -23,8 +23,9 @@ return new class extends Migration
             $table->string('customer_phone')->nullable();
             $table->boolean('sold')->default(false)->comment('售出狀態');
             $table->integer('sold_price')->nullable()->comment('售出金額');
+            $table->date('sold_date')->nullable()->comment('售出日期');
             $table->timestamp('expiration')->nullable()->comment('到期日');
-            $table->string('email')->unique();
+            $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();

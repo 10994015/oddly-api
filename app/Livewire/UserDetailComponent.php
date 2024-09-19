@@ -18,7 +18,7 @@ class UserDetailComponent extends Component
     public $sold_price;
     public $status;
     public $expiration;
-    public $cerated_at;
+    public $created_at;
     public $updated_at;
     public function mount($id){
         $this->id = $id;
@@ -30,10 +30,9 @@ class UserDetailComponent extends Component
         $this->sold = $user->sold == 1 ? true : false;
         $this->sold_price = $user->sold_price;
         $this->status = $user->status==1 ? true : false ;
-        Log::info($this->status);
-        $this->expiration = $user->expiration;
-        $this->cerated_at = $user->created_at;
-        $this->updated_at = $user->updated_at;
+        $this->expiration = $user->expiration?->format('Y-m-d');;
+        $this->created_at = $user->created_at?->format('Y-m-d');
+        $this->updated_at = $user->updated_at?->format('Y-m-d');
 
     }
     public function save(){
@@ -45,6 +44,7 @@ class UserDetailComponent extends Component
             $user->customer = $this->customer;
             $user->sold = $this->sold ? 1 : 0;
             $user->sold_price = $this->sold_price;
+            $user->sold_date = now()->format('Y-m-d');
             $user->status = $this->status ? 1 : 0;
             $user->expiration = $this->expiration;
             $user->save();

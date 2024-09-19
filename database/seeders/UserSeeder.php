@@ -24,17 +24,17 @@ class UserSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-        foreach(range(1, 10) as $index) {
-            DB::table('users')->insert([
-                'name' => 'User' . $index,
-                'email' => 'user' . $index . '@example.com',
-                'username'=> 'username' . $index,
-                'email_verified_at' => now(),
-                'password' => $this->generateRandomString(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
-        }
+        // foreach(range(1, 10) as $index) {
+        //     DB::table('users')->insert([
+        //         'name' => 'User' . $index,
+        //         'email' => 'user' . $index . '@example.com',
+        //         'username'=> 'username' . $index,
+        //         'email_verified_at' => now(),
+        //         'password' => $this->generateRandomString(),
+        //         'created_at' => now(),
+        //         'updated_at' => now(),
+        //     ]);
+        // }
     }
     function generateRandomString($length = 15)
     {

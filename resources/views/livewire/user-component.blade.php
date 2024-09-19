@@ -1,20 +1,99 @@
 <div class=" mx-auto mt-8 px-4 w-full"
 x-data="{
+    init() {
+        this.initChart();
+        console.log(this.chartData)
+    },
+    chartData: {{json_encode($salesChart)}},
     deviceModalShow: false,
     passwordModalShow:false,
+    createUserModalShow: false,
     openDeviceModel() {
         this.deviceModalShow =  true;
     },
     openPasswordModel() {
         this.passwordModalShow =  true;
+    },
+    openCreateUserModel(){
+        this.createUserModalShow =  true;
+    },
+    errorCreateUsers(){
+        alert('錯誤！一次最多新增1000筆資料');
+    },
+    successCreateUsers(){
+        alert('新增成功！');
+        this.createUserModalShow = false;
+    },
+    chart: null,
+    initChart(){
+        if (this.chart) {
+            this.chart.destroy();
+        }
+        const chartData = this.chartData;
+        this.$nextTick(() => {
+            if (this.$refs.canvas) {
+                this.chart = new Chart(this.$refs.canvas, {
+                    type: 'bar',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            },
+                        }
+                    }
+                });
+            } else {
+                console.error('Canvas element not found');
+            }
+        });
+    },
+    updateChart(newData) {
+        this.chartData = newData[0];
+        this.$nextTick(() => {
+            this.initChart();
+        });
     }
+
 }"
 x-on:open-device-model.window="openDeviceModel()"
 x-on:open-password-model.window="openPasswordModel()"
+x-on:error-create-useres.window="errorCreateUsers()"
+x-on:success-create-users.window="successCreateUsers()"
+x-on:update-chart.window="updateChart($event.detail)"
 >
     @include('livewire.components.device-token')
     @include('livewire.components.show-password')
+    @include('livewire.components.create-user')
     <h2 class="text-lg mb-4">帳號列表</h2>
+    <div>
+        <div class="relative inline-block w-48">
+            <select wire:model="currentYear"  class="block appearance-none w-full bg-white border border-gray-300 hover:border-gray-400 px-4 py-2 pr-8 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-gray-700 transition-colors duration-200">
+                @for($year=$initYear;$year>=2022;$year--)
+                    <option value="{{$year}}">{{$year}}</option>
+                @endfor
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                </svg>
+            </div>
+        </div>
+    </div>
+    <div class="flex justify-center items-center p-4 bg-gray-100">
+        <div class="bg-white rounded-lg shadow-md p-6 m-2 w-48 text-center transition-all duration-300 hover:shadow-lg hover:scale-105">
+          <span class="text-gray-600 text-sm font-medium">總售出量</span>
+          <p class="text-3xl font-bold text-indigo-600 mt-2">{{$totalSoldNumber}}</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6 m-2 w-48 text-center transition-all duration-300 hover:shadow-lg hover:scale-105">
+          <span class="text-gray-600 text-sm font-medium">總售出額</span>
+          <p class="text-3xl font-bold text-indigo-600 mt-2">$ {{ $totalSoldPrice }}</p>
+        </div>
+        <div class="statistics">
+            <canvas  x-ref="canvas" ></canvas>
+        </div>
+    </div>
     <div class="max-w-4xl mx-auto">
         <div class="flex flex-col justify-center space-y-4 md:flex-row md:space-y-0 md:space-x-4 p-4 bg-white rounded-lg shadow">
             <select wire:model.live="perPage" class="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 w-[100px]">
@@ -25,7 +104,6 @@ x-on:open-password-model.window="openPasswordModel()"
                 <option value="200">200 筆</option>
                 <option value="500">500 筆</option>
             </select>
-
             <!-- 搜尋輸入框 -->
             <input
                 wire:model.live.debounce.250ms="search"
@@ -34,27 +112,32 @@ x-on:open-password-model.window="openPasswordModel()"
                 class="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 flex-grow"
             >
         </div>
-        <div class="flex flex-col justify-center items-center space-y-4 md:flex-row md:space-y-0 md:space-x-4 p-4 bg-white rounded-lg shadow">
-
-            <!-- 分類按鈕 -->
-            <div class="flex space-x-2">
-                <button wire:click="resetFilter(1)" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
-                    全部顯示
-                </button>
-                <button wire:click="resetFilter(2)" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
-                    已售出
-                </button>
-                <button wire:click="resetFilter(3)" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
-                    未售出
-                </button>
-                <button wire:click="resetFilter(4)" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
-                    已停用
-                </button>
+        <div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 md:space-x-4 p-4 bg-white rounded-lg shadow">
+            <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
+                <!-- 分類按鈕 -->
+                <div class="flex space-x-2">
+                    <button wire:click="resetFilter(1)" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                        全部顯示
+                    </button>
+                    <button wire:click="resetFilter(2)" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+                        已售出
+                    </button>
+                    <button wire:click="resetFilter(3)" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+                        未售出
+                    </button>
+                    <button wire:click="resetFilter(4)" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
+                        已停用
+                    </button>
+                </div>
+                <div>
+                    分類:全部顯示
+                </div>
             </div>
             <div>
-                分類:全部顯示
+                <button @click="openCreateUserModel()" class="px-4 py-2 bg-green-800 text-white rounded-md hover:bg-green-900 focus:outline-none focus:ring-2 focus:ring-green-800 focus:ring-opacity-50">新增帳號</button>
             </div>
         </div>
+        
     </div>
 
     <div class="bg-white shadow-md rounded-lg w-full">
