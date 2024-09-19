@@ -75,7 +75,7 @@ class UserComponent extends Component
                     'username' => null,
                     'password' =>  $this->defaultCreateUserPassword,
                     'is_admin' => false,
-                    
+                    'created_at' => now(),
                 ]);
                 DB::table('users')
                 ->where('id', $id)
@@ -92,7 +92,7 @@ class UserComponent extends Component
     #[Layout('livewire.layouts.app')]
     public function render()
     {
-        
+
         $now = Carbon::now();
         $users = User::where('is_admin', false)
             ->where(function($query) {
@@ -114,7 +114,7 @@ class UserComponent extends Component
             $users = $users->where('sold', 0)->paginate($this->perPage);
         } elseif ($this->category == 4) {
             $users = $users->where('status', 0)->paginate($this->perPage);
-        } 
+        }
         return view('livewire.user-component', compact('users',));
     }
 }
