@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'username' => $this->username,
             'device_token'=>$this->device_token,
+            'expiration'=>$this->expiration,
             'status'=>$this->status,
         ];
     }
