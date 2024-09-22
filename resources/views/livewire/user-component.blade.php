@@ -75,28 +75,28 @@ x-on:success-create-users.window="successCreateUsers()"
             <div class="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-4">
                 <!-- 分類按鈕 -->
                 <div class="flex space-x-2">
-                    <button wire:click="resetFilter(1)" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+                    <button wire:click="updateFilter('all')" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
                         全部顯示
                     </button>
-                    <button wire:click="resetFilter(2)" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
+                    <button wire:click="updateFilter('sold')" class="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50">
                         已售出
                     </button>
-                    <button wire:click="resetFilter(3)" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
+                    <button wire:click="updateFilter('unsold')" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50">
                         未售出
                     </button>
-                    <button wire:click="resetFilter(4)" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
+                    <button wire:click="updateFilter('unactive')" class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
                         已停用
                     </button>
                 </div>
                 <div>
                     分類:
-                    @if($category==1)
+                    @if($category=='all')
                         全部顯示
-                    @elseif($category==2)
+                    @elseif($category=='sold')
                         已售出
-                    @elseif($category==3)
+                    @elseif($category=='unsold')
                         未售出
-                    @elseif($category==4)
+                    @elseif($category=='unactive')
                         已停用
                     @endif
                 </div>
@@ -127,7 +127,7 @@ x-on:success-create-users.window="successCreateUsers()"
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-            @forelse($users as $user)
+            @foreach($users as $user)
             <tr wire:key="{{$user->id}}">
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$user->id}}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{$user->name}}</td>
@@ -166,9 +166,10 @@ x-on:success-create-users.window="successCreateUsers()"
                 <a href="{{route('user.update-password', $user->id)}}" class=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-center">更改密碼</a>
             </td>
             </tr>
-            @empty
-                <td class="px-6 py-12 whitespace-nowrap text-sm text-gray-500 text-center" colspan="12">查無資料。</td>
-            @endforelse
+            @endforeach
+            @if($count <= 0)
+            <td class="px-6 py-12 whitespace-nowrap text-sm text-gray-500 text-center" colspan="12">查無資料。</td>
+            @endif
         </tbody>
       </table>
     </div>

@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -30,7 +31,7 @@ class UserDetailComponent extends Component
         $this->sold = $user->sold == 1 ? true : false;
         $this->sold_price = $user->sold_price;
         $this->status = $user->status==1 ? true : false ;
-        $this->expiration = $user->expiration?->format('Y-m-d');;
+        $this->expiration = $user->expiration ? Carbon::parse($user->expiration)->format('Y-m-d') : null;
         $this->created_at = $user->created_at?->format('Y-m-d');
         $this->updated_at = $user->updated_at?->format('Y-m-d');
 

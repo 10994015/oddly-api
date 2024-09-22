@@ -20,11 +20,17 @@
                             預設密碼
                         </td>
                         <td class=" px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider border border-gray-300 ">
+                            @if($customPassword)
                             <input
                                 wire:model="defaultCreateUserPassword"
                                 type="text" 
                                 class="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-150 ease-in-out"
                             />
+                            <button wire:click="changeCustomPassword(0)" class="px-4 py-2 mt-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">系統隨機產生</button>
+                            @else
+                            (系統隨機產生)
+                            <button wire:click="changeCustomPassword(1)" class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">自訂</button>
+                            @endif
                         </td>
                     </tr>
                 </table>

@@ -3,6 +3,7 @@
 use App\Http\Middleware\ApiAuthenticate;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +35,9 @@ Route::post('/login', function (Request $request) {
     if ($user && $user->password === $credentials['password']) {
         if(!$user->status){
             return response()->json(['message' => 'User not activated'], 403);
+        }
+        if(!is_null($user->expiration) && Carbon::parse($user->expiration) < Carbon::now()) {
+            return response()->json(['message' => 'User expired'], 403);
         }
         if(is_null(value: $user->device_token)) {
             $user->device_token = $deviceToken;

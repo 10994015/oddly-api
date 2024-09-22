@@ -8,11 +8,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Livewire\WithoutUrlPagination;
+use Livewire\WithPagination;
 
 class UserComponent extends Component
 {
-    use WithoutUrlPagination;
+    use WithPagination;
     public $deviceUsername;
     public $deviceCustmoer;
     public $deviceToken;
@@ -24,12 +24,14 @@ class UserComponent extends Component
 
     public $perPage = 10;
     public $search = '';
-    public $category = 1;
+    public $category = 'all';
     public $salesChart = [];
     public $currentYear;
     public $totalSoldPrice;
     public $totalSoldNumber;
     public $initYear;
+
+    public $customPassword = false;
     public function mount()
     {
         $this->currentYear = (int)now()->format('Y');
@@ -37,8 +39,8 @@ class UserComponent extends Component
         $this->reloadChart();
     }
     public function reloadChart(){
-        $solds = User::whereYear('sold_date', (int)$this->currentYear)->get();
-        $this->totalSoldPrice = $solds->sum('sold_price');
+        $solds = User::whereYear('sold_date', (int)$this->currentYear)->where('sold', 1)->get();
+        $this->totalSoldPrice = $this->formatNumber($solds->sum('sold_price'));
         $this->totalSoldNumber = $solds->count();
     }
     /**
@@ -49,6 +51,9 @@ class UserComponent extends Component
      */
     public function resetFilter($catgory){
         $this->category = $catgory;
+    }
+    public function changeCustomPassword($stauts){
+        $this->customPassword = $stauts==1 ? true : false;
     }
     public function openDeviceModal($id){
         $user = User::find($id);
@@ -73,7 +78,7 @@ class UserComponent extends Component
                 $id = DB::table('users')->insertGetId([
                     'name' => 'USER',
                     'username' => null,
-                    'password' =>  $this->defaultCreateUserPassword,
+                    'password' =>  $this->customPassword ? $this->defaultCreateUserPassword : $this->generateRandomString(),
                     'is_admin' => false,
                     'created_at' => now(),
                 ]);
@@ -92,29 +97,54 @@ class UserComponent extends Component
     #[Layout('livewire.layouts.app')]
     public function render()
     {
-
+        $this->resetPage();
         $now = Carbon::now();
-        $users = User::where('is_admin', false)
-            ->where(function($query) {
+        $users = $this->getFilteredUsers();
+
+        $users = $users->where(function($query) {
                 $query->where('username', 'like', '%' . $this->search . '%')
                     ->orWhere('name', 'like', '%' . $this->search . '%')
                     ->orWhere('customer', 'like', '%' . $this->search . '%')
                     ->orWhere('device_token', 'like', '%' . $this->search . '%')
-                    ->orWhere('expiration', 'like', '%' . $this->search . '%')
-                    ->orWhere('created_at', 'like', '%' . $this->search . '%')
-                    ->orWhere('updated_at', 'like', '%' . $this->search . '%');
-            });
-
-        // 其餘代碼保持不變
-        if ($this->category == 1) {
-            $users = $users->paginate($this->perPage);
-        } elseif ($this->category == 2) {
-            $users = $users->where('sold', 1)->paginate($this->perPage);
-        } elseif ($this->category == 3) {
-            $users = $users->where('sold', 0)->paginate($this->perPage);
-        } elseif ($this->category == 4) {
-            $users = $users->where('status', 0)->paginate($this->perPage);
-        }
-        return view('livewire.user-component', compact('users',));
+                    ->orWhere('expiration', 'like', '%' . $this->search . '%');
+            })->paginate($this->perPage);
+        $count = $users->count();
+        return view('livewire.user-component', compact('users', 'count'));
     }
+
+    public function getFilteredUsers(){
+        switch ($this->category) {
+            case 'sold':
+                return User::where('sold', true);
+            case 'unsold':
+                return User::where('sold', false);
+            case 'unactive':
+                return User::where('status', false);
+            default:
+                return User::query();
+        }
+    }
+    public function updateFilter($newCategory)
+    {
+        $this->category = $newCategory;
+    }
+    public function formatNumber($number) {
+        return number_format($number, 0, '.', ',');
+    }
+    function generateRandomString($length = 15)
+    {
+        // 定義要包含的字符集
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+
+        // 循環生成隨機字符
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+
+        return $randomString;
+    }
+
+
 }
