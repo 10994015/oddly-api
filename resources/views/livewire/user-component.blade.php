@@ -28,7 +28,8 @@ x-on:open-device-model.window="openDeviceModel()"
 x-on:open-password-model.window="openPasswordModel()"
 x-on:error-create-useres.window="errorCreateUsers()"
 x-on:success-create-users.window="successCreateUsers()"
->
+ 
+wire:ignore.self>
     @include('livewire.components.device-token')
     @include('livewire.components.show-password')
     @include('livewire.components.create-user')
@@ -173,7 +174,7 @@ x-on:success-create-users.window="successCreateUsers()"
         </tbody>
       </table>
     </div>
-    <div class="mt-10">
-        {{$users->links()}}
+    <div class="mt-10" >
+        {{$users->links(data: ['scrollTo' => false])  }}
       </div>
 </div>

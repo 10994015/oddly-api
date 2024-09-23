@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
 
 class UserComponent extends Component
@@ -69,6 +70,9 @@ class UserComponent extends Component
         $this->dispatch('open-password-model');
     }
     public function createUsers(){
+        $this->validate([
+           'defaultCreateUserPassword'=>'required|min:3|max:50', 
+        ]);
         if($this->defaultCreateUserNumber > 1000){
             $this->dispatch('error-create-useres');
             return;
@@ -97,11 +101,12 @@ class UserComponent extends Component
     #[Layout('livewire.layouts.app')]
     public function render()
     {
-        $this->resetPage();
+        // $this->resetPage();
         $now = Carbon::now();
         $users = $this->getFilteredUsers();
 
-        $users = $users->where(function($query) {
+        $users = $users->where('is_admin', false)
+                ->where(function($query) {
                 $query->where('username', 'like', '%' . $this->search . '%')
                     ->orWhere('name', 'like', '%' . $this->search . '%')
                     ->orWhere('customer', 'like', '%' . $this->search . '%')
