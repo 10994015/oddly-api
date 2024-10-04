@@ -25,7 +25,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::post('/login', function (Request $request) {
-
     if($request->username=='' || $request->password=='' || $request->device_token==''){
         return response()->json(['message' => 'Username or password is required'], 422);
     }
@@ -39,7 +38,7 @@ Route::post('/login', function (Request $request) {
         if(!is_null($user->expiration) && Carbon::parse($user->expiration) < Carbon::now()) {
             return response()->json(['message' => 'User expired'], 403);
         }
-        if(is_null(value: $user->device_token)) {
+        if(is_null($user->device_token) || true) {
             $user->device_token = $deviceToken;
             $user->save();
         }else {

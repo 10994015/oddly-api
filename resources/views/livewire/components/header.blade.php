@@ -2,7 +2,7 @@
   <header class="header-outer">
     <div class="header-inner responsive-wrapper">
       <div class="header-logo">
-        <a href="{{route('users')}}">HOME</a>
+        <a href="{{route('backend.users')}}">HOME</a>
       </div>
       <nav class="header-navigation">
         @if(Auth::check())
