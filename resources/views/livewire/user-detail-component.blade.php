@@ -57,10 +57,10 @@
               </div>
             </div>
             <div class="flex items-center justify-end space-x-4 mt-8">
-              <a href="{{route('backend.user.update-password', $id)}}" type="button" class="mr-auto px-4 py-2 border border-gray-300  text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              <a href="{{route('user.update-password', $id)}}" type="button" class="mr-auto px-4 py-2 border border-gray-300  text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 更改密碼
               </a>
-              <a href="{{route('backend.users')}}" class="px-4 py-2 border border-gray-300  text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">回列表</a>
+              <a href="{{route('users')}}" class="px-4 py-2 border border-gray-300  text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">回列表</a>
               <button type="submit" class="px-4 py-2 border border-transparent  shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 存檔
               </button>

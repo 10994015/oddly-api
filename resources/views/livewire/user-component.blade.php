@@ -163,8 +163,8 @@ wire:ignore.self>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$user->created_at}}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$user->updated_at}}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                <a href="{{route('backend.user.edit', $user->id)}}" class=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-center">編輯</a>
-                <a href="{{route('backend.user.update-password', $user->id)}}" class=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-center">更改密碼</a>
+                <a href="{{route('user.edit', $user->id)}}" class=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-center">編輯</a>
+                <a href="{{route('user.update-password', $user->id)}}" class=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-center">更改密碼</a>
             </td>
             </tr>
             @endforeach
