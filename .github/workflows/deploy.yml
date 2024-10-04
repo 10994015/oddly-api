@@ -25,14 +25,14 @@ jobs:
                     sudo chown -R www-data:www-data .
                     sudo chmod -R 775 storage bootstrap/cache
 
-                    # sudo git config --local credential.helper store
+                    sudo git config --local credential.helper store
                     sudo echo "https://${{ env.GIT_USERNAME }}:${{ env.GIT_TOKEN }}@github.com" > ~/.git-credentials
                     sudo chmod 755 ~/.git-credentials
 
                     sudo git fetch origin main
                     sudo git reset --hard origin/main
 
-                    # sudo git config --local --unset credential.helper
+                    sudo git config --local --unset credential.helper
                     sudo rm ~/.git-credentials
 
                     sudo -u www-data composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
