@@ -25,20 +25,22 @@ jobs:
                     sudo chown -R www-data:www-data .
                     sudo chmod -R 775 storage bootstrap/cache
 
-                    sudo git config --local credential.helper store
-                    sudo echo "https://${{ env.GIT_USERNAME }}:${{ env.GIT_TOKEN }}@github.com" > ~/.git-credentials
-                    sudo chmod 755 ~/.git-credentials
+                    sudo git config --global --add safe.directory /var/www/html/oddly
+                    
+                    sudo -u www-data git config credential.helper store
+                    echo "https://${{ env.GIT_USERNAME }}:${{ env.GIT_TOKEN }}@github.com" | sudo -u www-data tee /var/www/html/oddly/.git-credentials > /dev/null
+                    sudo chmod 600 /var/www/html/oddly/.git-credentials
 
-                    sudo git fetch origin main
-                    sudo git reset --hard origin/main
+                    sudo -u www-data git fetch origin main
+                    sudo -u www-data git reset --hard origin/main
 
-                    sudo git config --local --unset credential.helper
-                    sudo rm ~/.git-credentials
+                    sudo -u www-data git config --unset credential.helper
+                    sudo rm /var/www/html/oddly/.git-credentials
 
                     sudo -u www-data composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
                     sudo -u www-data php artisan migrate --force
-                    sudo npm run build
-                    php artisan config:cache
-                    php artisan route:cache
-                    php artisan view:cache
+                    sudo -u www-data npm run build
+                    sudo -u www-data php artisan config:cache
+                    sudo -u www-data php artisan route:cache
+                    sudo -u www-data php artisan view:cache
     
