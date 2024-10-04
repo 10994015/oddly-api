@@ -21,7 +21,7 @@ jobs:
                 key: ${{ secrets.EC2_SSH_KEY }}
                 script: |
                     set -ex
-                    cd /var/www/html/oddly-api
+                    cd /var/www/html/oddly
                     sudo chown -R www-data:www-data .
                     sudo chmod -R 775 storage bootstrap/cache
 
