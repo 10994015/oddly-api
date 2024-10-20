@@ -81,8 +81,6 @@ Route::get('/get-user', function (Request $request) {
         $user = Auth::user();
         if($user->is_online){
             return response()->json((new UserResource($user)), 200);
-        }else{
-            $user->tokens()->delete();
         }
     }
     return response()->json(['message' => 'User not logged in'], 401);
