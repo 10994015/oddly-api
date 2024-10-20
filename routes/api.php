@@ -48,6 +48,8 @@ Route::post('/login', function (Request $request) {
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
+        $user->is_online = true;
+        $user->save();
 
         return response()->json([
             'access_token' => $token,
@@ -65,8 +67,9 @@ Route::post('/logout', function (Request $request) {
         $user = Auth::user();
 
         // 撤銷當前用戶的所有 token
+        $user->is_online = false;
+        $user->save();
         $user->tokens()->delete();
-
         return response()->json(['message' => 'Logged out successfully'], 201);
     }
     // 如果用戶沒有登入，返回錯誤信息
