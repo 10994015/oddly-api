@@ -123,7 +123,7 @@ wire:ignore.self>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">售出狀態</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">有效日期</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">建立時間</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">最後更新時間</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">在線狀態</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
           </tr>
         </thead>
@@ -161,7 +161,12 @@ wire:ignore.self>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$user->expiration ?? '-'}}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$user->created_at}}</td>
-              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{$user->updated_at}}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm {{ $user->is_online ? 'text-green-500' : 'text-gray-400' }}">
+                {{$user->is_online ? '在線' : '離線'}}
+                @if($user->is_online)
+                    <button wire:click='forceOffline({{$user->id}})' class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-center block mt-2">強制離線</button>
+                @endif
+            </td>
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 <a href="{{route('user.edit', $user->id)}}" class=" bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-center">編輯</a>
                 <a href="{{route('user.update-password', $user->id)}}" class=" bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded text-center">更改密碼</a>

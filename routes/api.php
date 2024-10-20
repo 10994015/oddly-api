@@ -79,7 +79,11 @@ Route::post('/logout', function (Request $request) {
 Route::get('/get-user', function (Request $request) {
     if (Auth::check()) {
         $user = Auth::user();
-        return response()->json((new UserResource($user)), 200);
+        if($user->is_online){
+            return response()->json((new UserResource($user)), 200);
+        }else{
+            $user->tokens()->delete();
+        }
     }
     return response()->json(['message' => 'User not logged in'], 401);
 })->middleware('auth:sanctum')->withoutMiddleware(ApiAuthenticate::class);

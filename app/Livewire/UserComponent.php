@@ -98,6 +98,11 @@ class UserComponent extends Component
         $this->reset('defaultCreateUserNumber');
         $this->reset('defaultCreateUserPassword');
     }
+    public function forceOffline($id){
+        $user = User::find($id);
+        $user->is_online = false;
+        $user->save();
+    }
     #[Layout('livewire.layouts.app')]
     public function render()
     {
