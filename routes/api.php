@@ -46,6 +46,9 @@ Route::post('/login', function (Request $request) {
                 return response()->json(['message' => 'Device token mismatch'], 422);
             }
         }
+        if($user->is_online){
+            return response()->json(['message' => 'Another session is already active. Multiple logins are not allowed'], 403);
+        }
 
         $token = $user->createToken('auth_token')->plainTextToken;
         $user->is_online = true;
